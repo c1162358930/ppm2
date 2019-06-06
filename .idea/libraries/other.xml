@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="other">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/classes12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fastjson-1.2.58.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-annotations-2.6.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-core-2.6.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-databind-2.6.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-mapper-asl-1.9.13.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

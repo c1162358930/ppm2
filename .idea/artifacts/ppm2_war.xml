@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ppm2:war">
+    <output-path>$PROJECT_DIR$/out/artifacts/ppm2_war</output-path>
+    <root id="archive" name="ppm2_war.war">
+      <element id="artifact" artifact-name="ppm2:war exploded" />
+      <element id="dir-copy" path="$PROJECT_DIR$/web" />
+    </root>
+  </artifact>
+</component>
