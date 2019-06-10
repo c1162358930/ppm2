@@ -23,15 +23,15 @@
         })
         //绑定按钮
         function bindBtns(){
-            $("#addModelBtn").click(function(){
+            $("#addTempBtn").click(function(){
                 $("#addModel").modal("show");
             });
-            $("#deleModelBtn").click(function(){
+            $("#deleTempBtn").click(function(){
                 var deleLi=$("#modelList").find("li.active");
                 if(deleLi.length==1){
                     var _id=deleLi.prop("id");
                     $.ajax({
-                        url:"${pageContext.request.contextPath}/model/models/"+_id,
+                        url:"${pageContext.request.contextPath}/template/templates/"+_id,
                         type:"delete",
                         success:function (result) {
                             getModelList();
@@ -44,7 +44,7 @@
                     alert("请选中一条模板");
                 }
             });
-            $("#modifyModelBtn").click(function () {
+            $("#modifyTempBtn").click(function () {
                 var deleLi=$("#modelList").find("li.active");
                 if(deleLi.length==1){
                     var _id=deleLi.prop("id");
@@ -56,12 +56,21 @@
                     alert("请选中一条模板");
                 }
             });
+            $("#addProcedureBtn").click(function () {
+                var procedureName=$(this).next().val();
+                alert("正在开发中");
+                /*$.ajax({
+                    url:"",
+                    type:"post",
+                    data:{"name",procedureName}
+                })*/
+            });
         }
         //获取全部模板
         function getModelList(){
             $("#modelList").html("");
             $.ajax({
-                url:"${pageContext.request.contextPath}/model/models",
+                url:"${pageContext.request.contextPath}/template/templates",
                 type:"get",
                 dataType:"json",
                 success:function(result){
@@ -78,7 +87,7 @@
         //表单提交
         function formSubmit(){
             $.ajax({
-                url:"${pageContext.request.contextPath}/model/models",
+                url:"${pageContext.request.contextPath}/template/templates",
                 data:$("#modelForm").serialize(),
                 type:"post",
                 success:function (result) {
@@ -111,9 +120,9 @@
 
                 <div class="well">
                     <div class="btn-group" >
-                        <button class="btn btn-info" type="button" id="addModelBtn" >新增</button>
-                        <button class="btn btn-info" type="button" id="modifyModelBtn">修改</button>
-                        <button class="btn btn-info" type="button" id="deleModelBtn" >删除</button>
+                        <button class="btn btn-info" type="button" id="addTempBtn" >新增</button>
+                        <button class="btn btn-info" type="button" id="modifyTempBtn">修改</button>
+                        <button class="btn btn-info" type="button" id="deleTempBtn" >删除</button>
                     </div>
 
                     <ul id="modelList" class="list-group" style="margin-top:15px;">
@@ -182,7 +191,7 @@
                                     </select>
                                     <button type="button" class="btn btn-info">选择</button>
                                     <span class="pull-right">
-                                        <button type="button" class=" btn btn-info">添加工序</button>
+                                        <button type="button" id="addProcedureBtn" class=" btn btn-info">添加工序</button>
                                         <input type="text" class="pull-right form-control" placeholder="请输入工序名称">
                                     </span>
                                 </div>

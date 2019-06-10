@@ -1,6 +1,5 @@
-package ext.modular.model;
+package ext.modular.template;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import ext.modular.common.BasicEntity;
 import ext.modular.procedure.ProcedureEntity;
 
@@ -11,7 +10,7 @@ import ext.modular.procedure.ProcedureEntity;
  * @date 2019/6/4 14:14
  */
 
-public class ModelEntity extends BasicEntity {
+public class TemplateEntity extends BasicEntity {
     private String name;
     private ProcedureEntity procedure;
 

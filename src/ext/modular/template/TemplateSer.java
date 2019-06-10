@@ -1,4 +1,4 @@
-package ext.modular.model;
+package ext.modular.template;
 
 import ext.modular.common.ConnectionUtil;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.List;
  * @date 2019/6/4 14:30
  */
 @Service
-public class ModelSer {
+public class TemplateSer {
     private String selectField="id,createTime,updateTime,creator,name";
     private String insertField="id,creator,name";
     /**
@@ -25,17 +25,17 @@ public class ModelSer {
      * @Author Fxiao
      * @Description
      * @Date 12:17 2019/6/5
-     * @param modelEntity
+     * @param templateEntity
      * @return void
      **/
-    public void add(ModelEntity modelEntity)  {
+    public void add(TemplateEntity templateEntity)  {
         Connection connection= null;
         Statement statement=null;
         try {
             connection = ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
             String sqlStr=String.format("insert into ppm_template(%s) values(ppm_seq.nextval,'%s','%s')"
-                    ,insertField,modelEntity.getCreator(),modelEntity.getName());
+                    ,insertField, templateEntity.getCreator(), templateEntity.getName());
             statement.execute(sqlStr);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -51,13 +51,13 @@ public class ModelSer {
      * @Description
      * @Date 12:16 2019/6/5
      * @param
-     * @return java.util.List<ext.modular.model.ModelEntity>
+     * @return java.util.List<ext.modular.template.TemplateEntity>
      **/
-    public List<ModelEntity> getModelList(){
+    public List<TemplateEntity> getModelList(){
         Connection connection= null;
         Statement statement=null;
         ResultSet resultSet=null;
-        List<ModelEntity> dataList=new LinkedList<>();
+        List<TemplateEntity> dataList=new LinkedList<>();
         try {
             connection = ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
@@ -65,13 +65,13 @@ public class ModelSer {
             resultSet=statement.executeQuery(sqlStr);
             if(resultSet!=null){
                 while (resultSet.next()){
-                    ModelEntity modelEntity=new ModelEntity();
-                    modelEntity.setId(resultSet.getInt("ID"));
-                    modelEntity.setCreator(resultSet.getString("creator"));
-                    modelEntity.setName(resultSet.getString("NAME"));
-                    modelEntity.setCreateTime(resultSet.getDate("createTime"));
-                    modelEntity.setUpdateTime(resultSet.getDate("updateTime"));
-                    dataList.add(modelEntity);
+                    TemplateEntity templateEntity =new TemplateEntity();
+                    templateEntity.setId(resultSet.getInt("ID"));
+                    templateEntity.setCreator(resultSet.getString("creator"));
+                    templateEntity.setName(resultSet.getString("NAME"));
+                    templateEntity.setCreateTime(resultSet.getDate("createTime"));
+                    templateEntity.setUpdateTime(resultSet.getDate("updateTime"));
+                    dataList.add(templateEntity);
                 }
             }
         } catch (ClassNotFoundException e) {
@@ -107,13 +107,13 @@ public class ModelSer {
             ConnectionUtil.close(connection,statement);
         }
     }
-    public void update(ModelEntity modelEntity){
+    public void update(TemplateEntity templateEntity){
         Connection connection= null;
         Statement statement=null;
         try {
             connection = ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
-            String sqlStr=String.format("UPDATE ppm_template SET name='%s' WHERE id=%s",modelEntity.getName(),modelEntity.getId());
+            String sqlStr=String.format("UPDATE ppm_template SET name='%s' WHERE id=%s", templateEntity.getName(), templateEntity.getId());
             statement.execute(sqlStr);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
