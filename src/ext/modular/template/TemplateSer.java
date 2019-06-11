@@ -1,6 +1,8 @@
 package ext.modular.template;
 
 import ext.modular.common.ConnectionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -18,6 +20,7 @@ import java.util.List;
  */
 @Service
 public class TemplateSer {
+    private final Logger log= LoggerFactory.getLogger(this.getClass());
     private String selectField="id,createTime,updateTime,creator,name";
     private String insertField="id,creator,name";
     /**
@@ -62,6 +65,7 @@ public class TemplateSer {
             connection = ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
             String sqlStr=String.format("SELECT %s FROM ppm_template order by createTime",selectField);
+            log.info("sqlStr={}",sqlStr);
             resultSet=statement.executeQuery(sqlStr);
             if(resultSet!=null){
                 while (resultSet.next()){

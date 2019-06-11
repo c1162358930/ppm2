@@ -1,12 +1,12 @@
 package ext.modular.common;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 /**
  * des:
@@ -15,25 +15,29 @@ import java.util.Properties;
  * @date 2019/6/4 14:31
  */
 public class ConnectionUtil {
-    /*private static String driver="oracle.jdbc.driver.OracleDriver";
-    private static String url="jdbc:oracle:thin:@192.168.199.105:1521:wind";
+    private final static Logger log= LoggerFactory.getLogger(ConnectionUtil.class);
+    private static String driver="oracle.jdbc.driver.OracleDriver";
+    private static String url="jdbc:oracle:thin:@192.168.199.132:1521:wind";
     private static String userName="yaao";
-    private static String pass="yaao";*/
+    private static String pass="yaao";
+
 
     public static Connection getJdbcConnection() throws ClassNotFoundException, SQLException {
-        InputStream inputStream = ConnectionUtil.class.getResourceAsStream("/jdbc.properties");
-        Properties p = new Properties();
-        try {
-            p.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String driver=p.getProperty("db.driver");
-        String url=p.getProperty("db.url");
-        String userName=p.getProperty("db.userName");
-        String pass=p.getProperty("db.password");
+//        InputStream inputStream = ConnectionUtil.class.getResourceAsStream("/jdbc.properties");
+//        Properties p = new Properties();
+//        try {
+//            p.load(inputStream);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        String driver=p.getProperty("db.driver");
+//        String url=p.getProperty("db.url");
+//        String userName=p.getProperty("db.userName");
+//        String pass=p.getProperty("db.password");
+        log.info("正在尝试连接数据库，driver={},url={}",driver,url);
         Class.forName(driver);
         Connection conn= DriverManager.getConnection(url,userName,pass);
+        log.info("获取到的connection为：{}",conn);
         return conn;
     }
     public static void close(Connection connection, Statement statement){
