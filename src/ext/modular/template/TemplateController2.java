@@ -1,19 +1,20 @@
 package ext.modular.template;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
  * @author fxiao
  * @date 2019/6/4 12:13
  */
-//@Controller
+@Controller
 public class TemplateController2 {
     private final Logger log= LoggerFactory.getLogger(this.getClass());
     /*@Autowired
@@ -64,7 +65,13 @@ public class TemplateController2 {
 
             if(templateList!=null){
                 log.info("获取的模板列表长度为{}",String.valueOf(templateList.size()));
-                jsonStr= JSON.toJSONString(templateList);
+                log.info("list内容：{}", Arrays.toString(templateList.toArray()));
+                log.info("尝试转换null:{}",JSON.toJSONString(null));
+                log.info("尝试转换空list，转化结果为：{}",JSON.toJSONString(new ArrayList<>()));
+                Gson gson=new Gson();
+                jsonStr = gson.toJson(templateList);
+                log.info("gson转化后的json"+jsonStr);
+
             }else{
                 log.info("获取模板列表失败！templateList==null");
             }

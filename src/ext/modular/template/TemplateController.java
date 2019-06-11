@@ -28,7 +28,8 @@ public class TemplateController {
     @ResponseBody
     @RequestMapping(value = "templates",method = RequestMethod.GET)
     public List<TemplateEntity> List(){
-        return templateSer.getModelList();
+        List<TemplateEntity> list = templateSer.getModelList();
+        return list;
     }
     @ResponseBody
     @RequestMapping(value = "templates",method = RequestMethod.POST)
