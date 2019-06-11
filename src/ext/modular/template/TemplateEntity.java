@@ -30,12 +30,4 @@ public class TemplateEntity extends BasicEntity {
         this.procedure = procedure;
     }
 
-    @Override
-    public String toString() {
-        return String.format("{\"id\":\"%s\",\"createTime\":\"%s\",\"updateTime\":\"%s\",\"creator\":\"%s\"" +
-                ",\"name\":\"%s\",\"procedure\":\"%s\"}",
-                this.getId(),this.getCreateTime(),this.getUpdateTime(),this.getCreator(),this.getName(),
-                this.getProcedure()==null?"null":this.getProcedure().getId()
-                );
-    }
 }

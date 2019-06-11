@@ -1,11 +1,10 @@
 package ext.modular.template;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.google.gson.Gson;
+import ext.modular.common.ResultUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -13,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,44 +57,50 @@ public class TemplateController2 {
         String actionName = request.getParameter("actionName");
         log.info("actionName={}",actionName);
         TemplateSer templateSer=new TemplateSer();
+        //获取模板列表
         if("get".equals(actionName)){
             List templateList=templateSer.getModelList();
-
             if(templateList!=null){
                 log.info("获取的模板列表长度为{}",String.valueOf(templateList.size()));
-                log.info("list内容：{}", Arrays.toString(templateList.toArray()));
-                log.info("尝试转换null:{}",JSON.toJSONString(null));
-                log.info("尝试转换空list，转化结果为：{}",JSON.toJSONString(new ArrayList<>()));
-                Gson gson=new Gson();
-                jsonStr = gson.toJson(templateList);
-                log.info("gson转化后的json"+jsonStr);
-
+                jsonStr = ResultUtils.succ(templateList);
+                log.info(jsonStr);
             }else{
                 log.info("获取模板列表失败！templateList==null");
+                jsonStr=ResultUtils.error("获取模板列表失败！");
             }
-        }else if("post".equals(actionName)){
+        }
+        //存储或修改模板的方法
+        else if("post".equals(actionName)){
             TemplateEntity templateEntity=new TemplateEntity();
             String templateId=request.getParameter("id");
-            templateEntity.setId(Integer.valueOf(templateId));
+            log.info("templateId={}",templateId);
             templateEntity.setName(request.getParameter("name"));
-
-            if (templateEntity.getId()==0) {
+            if(StringUtils.isEmpty(templateId)){
+                templateEntity.setId(0);
                 templateSer.add(templateEntity);
+                jsonStr=ResultUtils.succ(null,"新增成功");
             }else{
+                templateEntity.setId(Integer.valueOf(templateId));
                 templateSer.update(templateEntity);
+                jsonStr=ResultUtils.succ(null,"修改成功");
             }
         }else if("delete".equals(actionName)){
             String templateId=request.getParameter("id");
-            templateSer.delete(Integer.valueOf(templateId));
+            log.info("templateId={}",templateId);
+            if(StringUtils.isEmpty(templateId)){
+                jsonStr= ResultUtils.error("删除失败，缺少id信息");
+            }else{
+                templateSer.delete(Integer.valueOf(templateId));
+                jsonStr=ResultUtils.succ(null);
+            }
         }
-
         response.setContentType("text/html;charset=UTF-8");
         response.setHeader("Cache-Control", "no-store,no-cache");
         response.setHeader("Pragma", "no-cache");
         try {
             PrintWriter pw = response.getWriter();
             if (null != jsonStr){
-                pw.print("结果是："+jsonStr);
+                pw.print(jsonStr);
             }
             pw.flush();
             pw.close();
