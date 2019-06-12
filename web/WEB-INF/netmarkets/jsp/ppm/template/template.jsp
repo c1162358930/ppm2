@@ -9,9 +9,9 @@
 <html>
 <head>
     <title>基础管理</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resource/static/bootstrap.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resource/static/jquery.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resource/static/bootstrap.js"></script>
+    <link rel="stylesheet" href="../static/bootstrap.css">
+    <script type="text/javascript" src="../static/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/bootstrap.js"></script>
     <script type="text/javascript" >
         $(function(){
             //获取数据
@@ -35,8 +35,11 @@
                     $.ajax({
                         url:"/Windchill/servlet/Navigation/template",
                         data:_data,
-                        type:"delete",
+                        type:"get",
                         success:function (result) {
+                            if(!result.success){
+                                alert(result.message);
+                            }
                             getModelList();
                         },
                         error:function (a,b,c,d) {
@@ -74,7 +77,7 @@
             $("#modelList").html("");
             $.ajax({
                 url:"/Windchill/servlet/Navigation/template",
-                data:{"actionName":"post"},
+                data:{"actionName":"get"},
                 type:"get",
                 dataType:"json",
                 success:function(result){
@@ -96,10 +99,13 @@
         //表单提交
         function formSubmit(){
             $.ajax({
-                url:"${pageContext.request.contextPath}/template/templates",
+                url:"/Windchill/servlet/Navigation/template?actionName=post",
                 data:$("#modelForm").serialize(),
                 type:"post",
                 success:function (result) {
+                    if(!result.success){
+                        addLog(result.message);
+                    }
                     $("#addModel").modal("hide");
                     getModelList();
                 },

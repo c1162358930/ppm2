@@ -111,6 +111,14 @@ public class TemplateSer {
             ConnectionUtil.close(connection,statement);
         }
     }
+    /*
+     * 更新模板
+     * @Author Fxiao
+     * @Description
+     * @Date 10:38 2019/6/12
+     * @param templateEntity
+     * @return void
+     **/
     public void update(TemplateEntity templateEntity){
         Connection connection= null;
         Statement statement=null;

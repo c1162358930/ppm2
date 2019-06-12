@@ -17,7 +17,7 @@ import java.sql.Statement;
 public class ConnectionUtil {
     private final static Logger log= LoggerFactory.getLogger(ConnectionUtil.class);
     private static String driver="oracle.jdbc.driver.OracleDriver";
-    private static String url="jdbc:oracle:thin:@192.168.199.132:1521:wind";
+    private static String url="jdbc:oracle:thin:@192.168.199.204:1521:wind";
     private static String userName="yaao";
     private static String pass="yaao";
 
