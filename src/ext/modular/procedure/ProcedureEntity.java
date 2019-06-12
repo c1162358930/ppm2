@@ -11,7 +11,6 @@ import ext.modular.common.BasicEntity;
  */
 public class ProcedureEntity extends BasicEntity {
     private String name;
-    private CharacteristicEntity characteristic;
 
     public String getName() {
         return name;
@@ -19,13 +18,5 @@ public class ProcedureEntity extends BasicEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public CharacteristicEntity getCharacteristic() {
-        return characteristic;
-    }
-
-    public void setCharacteristic(CharacteristicEntity characteristic) {
-        this.characteristic = characteristic;
     }
 }

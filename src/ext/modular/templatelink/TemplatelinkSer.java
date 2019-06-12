@@ -1,5 +1,6 @@
 package ext.modular.templatelink;
 
+import ext.modular.characteristic.CharacteristicEntity;
 import ext.modular.common.ConnectionUtil;
 import org.springframework.stereotype.Service;
 

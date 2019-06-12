@@ -68,11 +68,11 @@ public class CharacteristicController {
         }
         //删除
         else if("deleteCharac".equals(actionName)){
-            int id =Integer.parseInt(request.getParameter("id"));
+            String id =request.getParameter("id");
             if(StringUtils.isEmpty(id)){
                 jsonStr= ResultUtils.error("删除失败，缺少id信息");
             }else{
-                ser.deleteCharac(id);
+                ser.deleteCharac(Integer.parseInt(id));
                 jsonStr=ResultUtils.succ(null);
             }
         }
