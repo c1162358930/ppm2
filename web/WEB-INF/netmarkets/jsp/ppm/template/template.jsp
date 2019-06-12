@@ -30,8 +30,11 @@
                 var deleLi=$("#modelList").find("li.active");
                 if(deleLi.length==1){
                     var _id=deleLi.prop("id");
+                    var _data={"actionName":"delete"};
+                    _data.id=_id;
                     $.ajax({
-                        url:"${pageContext.request.contextPath}/template/templates/"+_id,
+                        url:"/Windchill/servlet/Navigation/template",
+                        data:_data,
                         type:"delete",
                         success:function (result) {
                             getModelList();
@@ -70,14 +73,20 @@
         function getModelList(){
             $("#modelList").html("");
             $.ajax({
-                url:"${pageContext.request.contextPath}/template/templates",
+                url:"/Windchill/servlet/Navigation/template",
+                data:{"actionName":"post"},
                 type:"get",
                 dataType:"json",
                 success:function(result){
-                    $.each(result,function(i,n){
-                        var listItem=$("<li></li>").addClass("list-group-item").prop("id",n.id).text(n.name);
-                        $("#modelList").append(listItem);
-                    });
+                    if(result.success){
+                        $.each(result.data,function(i,n){
+                            var listItem=$("<li></li>").addClass("list-group-item").prop("id",n.id).text(n.name);
+                            $("#modelList").append(listItem);
+                        });
+                    }else{
+                        addLog("获取模板请求成功，但是未请求到数据。"+result.message);
+                    }
+
                 },
                 error:function (a,b,c,d) {
                     alert("获取数据失败:"+b);
@@ -110,6 +119,10 @@
                 $("#modelForm").get(0).reset();
                 $("#modelForm").find("input[type=hidden]").val("0");
             });
+        }
+        function addLog(message){
+            var _li=$("<li></li>").text(message);
+            $("#log").children("ul").append(_li);
         }
     </script>
 </head>
@@ -216,5 +229,6 @@
         </div><!--.modal-->
 
     </div>
+    <div id="log"><ul></ul></div>
 </body>
 </html>

@@ -23,31 +23,6 @@ import java.util.List;
 @Controller
 public class TemplateController2 {
     private final Logger log= LoggerFactory.getLogger(this.getClass());
-    /*@Autowired
-    private TemplateSer templateSer;
-    @RequestMapping(value = "templatehome",method = RequestMethod.GET)
-    public String page(){
-        return "template/template";
-    }
-    @ResponseBody
-    @RequestMapping(value = "templates",method = RequestMethod.GET)
-    public List<TemplateEntity> List(){
-        return templateSer.getModelList();
-    }
-    @ResponseBody
-    @RequestMapping(value = "templates",method = RequestMethod.POST)
-    public void addOrUpdate(TemplateEntity templateEntity){
-        if (templateEntity.getId()==0) {
-            templateSer.add(templateEntity);
-        }else{
-            templateSer.update(templateEntity);
-        }
-    }
-    @ResponseBody
-    @RequestMapping(value = "templates/{id}",method = RequestMethod.DELETE)
-    public void delete(@PathVariable("id") int id){
-        templateSer.delete(id);
-    }*/
 
     public TemplateController2() {
     }
@@ -94,6 +69,7 @@ public class TemplateController2 {
                 jsonStr=ResultUtils.succ(null);
             }
         }
+        response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=UTF-8");
         response.setHeader("Cache-Control", "no-store,no-cache");
         response.setHeader("Pragma", "no-cache");

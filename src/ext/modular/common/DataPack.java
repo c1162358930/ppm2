@@ -9,7 +9,7 @@ package ext.modular.common;
 public class  DataPack<T> {
     private String message;
     private boolean success;
-    private T Data;
+    private T data;
 
     protected DataPack() {
     }
@@ -23,7 +23,7 @@ public class  DataPack<T> {
     }
 
     public T getData() {
-        return Data;
+        return data;
     }
 
     protected void setMessage(String message) {
@@ -35,6 +35,6 @@ public class  DataPack<T> {
     }
 
     protected void setData(T data) {
-        Data = data;
+        this.data = data;
     }
 }
