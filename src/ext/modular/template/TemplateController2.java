@@ -51,25 +51,31 @@ public class TemplateController2 {
             String templateId=request.getParameter("id");
             log.info("templateId={}",templateId);
             templateEntity.setName(request.getParameter("name"));
+            //准备工序数据
+            ProcedureSer procedureSer=new ProcedureSer();
+            String []procedureList=request.getParameterValues("procedure.id");
+            int newTemplateId=0;
+
             if(StringUtils.isEmpty(templateId)){
+                //新增
                 templateEntity.setId(0);
                 TemplateEntity newTemplate=templateSer.add(templateEntity);
                 if(newTemplate==null){
                     jsonStr=ResultUtils.error("插入模板数据成功，但是未插入工序关系失败");
                 }else{
                     log.info("新增加的模板的id为：{}",newTemplate.getId());
-                    //添加工序到模板里去
-                    ProcedureSer procedureSer=new ProcedureSer();
-                    String []procedureList=request.getParameterValues("procedure.id");
-
-                    procedureSer.addIntoTemplate(newTemplate.getId(),procedureList,"无名");
+                    newTemplateId=newTemplate.getId();
                     jsonStr=ResultUtils.succ(null,"新增成功");
                 }
             }else{
+                //修改
                 templateEntity.setId(Integer.valueOf(templateId));
                 templateSer.update(templateEntity);
                 jsonStr=ResultUtils.succ(null,"修改成功");
+                newTemplateId=templateEntity.getId();
             }
+            //添加工序到模板里去
+            if(newTemplateId!=0) procedureSer.addIntoTemplate(newTemplateId,procedureList,"无名");
         }else if("delete".equals(actionName)){
             String templateId=request.getParameter("id");
             log.info("templateId={}",templateId);

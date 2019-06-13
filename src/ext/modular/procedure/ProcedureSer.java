@@ -99,9 +99,9 @@ public class ProcedureSer {
         try{
             connection=ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
-
-            String sqlStr="SELECT ppm_order FROM (SELECT ppm_order FROM PPM_TEMPLATE_WORK_LINK ORDER by  ppm_order desc)WHERE rownum=1";
-            ResultSet resultSet=statement.executeQuery(sqlStr);
+            //如果当前模板有旧的工序，则删除旧工序关系，再插入新工序关系
+            String sqlStr="DELETE FROM PPM_TEMPLATE_WORK_LINK WHERE TEMPLATE_ID="+templateId;
+            statement.execute(sqlStr);
 
             log.info("procedureIds={}", Arrays.toString(procedureIds));
             //循环插入关系数据
