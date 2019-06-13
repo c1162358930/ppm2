@@ -10,6 +10,14 @@
 <head>
     <title>基础管理</title>
     <link rel="stylesheet" href="../static/bootstrap.css">
+    <style type="text/css" rel="stylesheet" >
+        button.myClose{
+            -webkit-appearance: none;
+            padding: 0;
+            cursor: pointer;
+            background: transparent;
+            border: 0;}
+    </style>
     <script type="text/javascript" src="../static/jquery.min.js"></script>
     <script type="text/javascript" src="../static/bootstrap.js"></script>
     <script type="text/javascript" >
@@ -57,9 +65,12 @@
             //"选择工序"按钮
             $("#selectProcedureBtn").click(function () {
                 var selected=$(this).prev().children("option:selected");
+                var _div=$("<div></div>").addClass("form-inline");
                 var _input1=$('<input type="text" disabled="disabled" class="form-control " >').val(selected.text());
                 var _input2=$('<input type="hidden" name="procedure.id">').val($(this).prev().val());
-                $("#gongxuContent").append(_input1).append(_input2);
+                var closeBtn='<button id="removeProcedure" type="button" class="myClose">&nbsp;&times;&nbsp;</button>';
+                _div.append(_input1).append(_input2).append(closeBtn);
+                $("#gongxuContent").append(_div);
             });
             //"删除模板" 按钮
             $("#deleTempBtn").click(function(){
@@ -91,9 +102,12 @@
             $("#modifyTempBtn").click(function () {
                 var seleLi=$("#modelList").find("li.active");
                 if(seleLi.length==1){
+                    //带入模板基础信息
                     var _id=seleLi.prop("id");
                     $("#modelForm").find("input[name=id]").val(_id);
                     $("#modelForm").find("input[name=name]").val(seleLi.text());
+                    //获取全部工序放到下拉框里面
+                    getProcedure();
                     //获取模板下的所有工序
                     $.ajax({
                         url:"/Windchill/servlet/Navigation/procedure",
@@ -103,10 +117,13 @@
                         success:function (result) {
                             if(result.success){
                                 $.each(result.data,function (i,n) {
+                                    var _div=$("<div></div>").addClass("form-inline");
                                     var _input1=$('<input type="text" disabled="disabled" class="form-control " >')
                                         .val(n.name);
                                     var _input2=$('<input type="hidden" name="procedure.id">').val(n.id);
-                                    $("#gongxuContent").append(_input1).append(_input2);
+                                    var closeBtn='<button id="removeProcedure" type="button" class="myClose">&nbsp;&times;&nbsp;</button>';
+                                    _div.append(_input1).append(_input2).append(closeBtn);
+                                    $("#gongxuContent").append(_div);
                                 });
                                 $("#addModel").modal("show");
                             }else{
@@ -146,6 +163,11 @@
                     }
                 });
             });
+            //去除模板中的工序的按钮
+            $("#gongxuContent").on("click","#removeProcedure",function () {
+                $(this).parent("div").remove();
+            });
+
         }
         //获取全部模板
         function getModelList(){
@@ -235,7 +257,7 @@
                         <button class="btn btn-info" type="button" id="deleCharBtn" >删除</button>
                         <button class="btn btn-info" type="button" id="importCharBtn" >导入工艺化结构工序</button>
                     </div>
-                    <table class="table">
+                    <table class="table" id="procedureList">
                         <tr><th>序号</th><th>工序名称</th><th>工序检验特性</th><th>检验特性数量</th><th>严酷度加权系数</th></tr>
                         <tr>
                             <td>1</td>
@@ -281,7 +303,7 @@
                                 <label for="gongxu" class="col-md-3 control-label">选择工序</label>
                                 <div class="col-md-7 form-inline">
                                     <select id="gongxu" class="form-control">
-                                        <option>数据获取中，请稍后……</option>
+                                        <option>数据获取中……</option>
                                     </select>
                                     <button id="selectProcedureBtn" type="button" class="btn btn-info">选择</button>
                                     <span class="pull-right">
