@@ -105,12 +105,12 @@ public class ProcedureSer {
 
             log.info("procedureIds={}", Arrays.toString(procedureIds));
             //循环插入关系数据
-            for (String procedureId : procedureIds) {
+            for (int i = 0; i <procedureIds.length; i++) {
                 sqlStr=String.format(
                         "INSERT INTO PPM_TEMPLATE_WORK_LINK(id,creator,template_id,tw_id,ppm_order) " +
                                 "VALUES (ppm_seq.nextval,'%s',%s,%s,ppm_order_num_seq.nextval)",
-                        currentUserId,templateId,procedureId);
-                log.info("插入id为\"{}\"的工序时的sql为\"{}\"",procedureId,sqlStr);
+                        currentUserId,templateId,procedureIds[i]);
+                log.info("插入id为\"{}\"的工序时的sql为\"{}\"",procedureIds[i],sqlStr);
                 statement.execute(sqlStr);
             }
 
