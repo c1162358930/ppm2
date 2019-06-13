@@ -1,6 +1,7 @@
 package ext.modular.template;
 
 import ext.modular.common.ResultUtils;
+import ext.modular.procedure.ProcedureSer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -52,8 +53,18 @@ public class TemplateController2 {
             templateEntity.setName(request.getParameter("name"));
             if(StringUtils.isEmpty(templateId)){
                 templateEntity.setId(0);
-                templateSer.add(templateEntity);
-                jsonStr=ResultUtils.succ(null,"新增成功");
+                TemplateEntity newTemplate=templateSer.add(templateEntity);
+                if(newTemplate==null){
+                    jsonStr=ResultUtils.error("插入模板数据成功，但是未插入工序关系失败");
+                }else{
+                    log.info("新增加的模板的id为：{}",newTemplate.getId());
+                    //添加工序到模板里去
+                    ProcedureSer procedureSer=new ProcedureSer();
+                    String []procedureList=request.getParameterValues("procedure.id");
+
+                    procedureSer.addIntoTemplate(newTemplate.getId(),procedureList,"无名");
+                    jsonStr=ResultUtils.succ(null,"新增成功");
+                }
             }else{
                 templateEntity.setId(Integer.valueOf(templateId));
                 templateSer.update(templateEntity);

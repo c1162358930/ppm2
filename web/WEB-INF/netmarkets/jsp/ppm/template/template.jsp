@@ -21,11 +21,47 @@
             //绑定事件
             bindEvent();
         })
+        //获取工序
+        function getProcedure(){
+            $.ajax({
+                url:"/Windchill/servlet/Navigation/procedure",
+                data:{"actionName":"get"},
+                type:"get",
+                dataType:"json",
+                success:function (result) {
+                    if(!result.success){
+                        alert(result.message);
+                    }else{
+                        $("#gongxu").children("option").remove();
+                        $.each(result.data,function (i,n) {
+                            var _option=$("<option></option>").text(n.name).prop("value",n.id);
+                            $("#gongxu").append(_option);
+                        });
+                    }
+                },
+                error:function (a,b,c,d) {
+                    alert(c);
+                }
+            })
+        }
+
+
         //绑定按钮
         function bindBtns(){
+            //"增加模板"按钮
             $("#addTempBtn").click(function(){
+                //动态获取所有工序
+                getProcedure();
                 $("#addModel").modal("show");
             });
+            //"选择工序"按钮
+            $("#selectProcedureBtn").click(function () {
+                var selected=$(this).prev().children("option:selected");
+                var _input1=$('<input type="text" disabled="disabled" class="form-control " >').val(selected.text());
+                var _input2=$('<input type="hidden" name="procedure.id">').val($(this).prev().val());
+                $("#gongxuContent").append(_input1).append(_input2);
+            });
+            //"删除模板" 按钮
             $("#deleTempBtn").click(function(){
                 var deleLi=$("#modelList").find("li.active");
                 if(deleLi.length==1){
@@ -36,6 +72,7 @@
                         url:"/Windchill/servlet/Navigation/template",
                         data:_data,
                         type:"get",
+                        dataType:"json",
                         success:function (result) {
                             if(!result.success){
                                 alert(result.message);
@@ -50,26 +87,64 @@
                     alert("请选中一条模板");
                 }
             });
+            //修改模板按钮
             $("#modifyTempBtn").click(function () {
-                var deleLi=$("#modelList").find("li.active");
-                if(deleLi.length==1){
-                    var _id=deleLi.prop("id");
+                var seleLi=$("#modelList").find("li.active");
+                if(seleLi.length==1){
+                    var _id=seleLi.prop("id");
                     $("#modelForm").find("input[name=id]").val(_id);
-                    $("#modelForm").find("input[name=name]").val(deleLi.text());
-                    $("#addModel").modal("show");
+                    $("#modelForm").find("input[name=name]").val(seleLi.text());
+                    //获取模板下的所有工序
+                    $.ajax({
+                        url:"/Windchill/servlet/Navigation/procedure",
+                        type:"get",
+                        dataType:"json",
+                        data:{"actionName":"getByTemplate","templateId":_id},
+                        success:function (result) {
+                            if(result.success){
+                                $.each(result.data,function (i,n) {
+                                    var _input1=$('<input type="text" disabled="disabled" class="form-control " >')
+                                        .val(n.name);
+                                    var _input2=$('<input type="hidden" name="procedure.id">').val(n.id);
+                                    $("#gongxuContent").append(_input1).append(_input2);
+                                });
+                                $("#addModel").modal("show");
+                            }else{
+                                alert(result.message);
+                            }
+                        },
+                        error:function (a, b, c, d) {
+                            alert(b);
+                        }
+                    })
 
                 }else{
                     alert("请选中一条模板");
                 }
             });
+            //“添加工序按钮”
             $("#addProcedureBtn").click(function () {
-                var procedureName=$(this).next().val();
-                alert("正在开发中");
-                /*$.ajax({
-                    url:"",
-                    type:"post",
-                    data:{"name",procedureName}
-                })*/
+                var _input=$(this).next();
+                var procedureName=_input.val();
+                var _data={"actionName":"add"};
+                _data.procedureName=procedureName;
+                $.ajax({
+                    url:"/Windchill/servlet/Navigation/procedure",
+                    data:_data,
+                    type:"get",
+                    dataType:"json",
+                    success:function (result) {
+                        if(result.success){
+                            getProcedure();
+                            _input.val("");
+                        }else{
+                            alert(result.message);
+                        }
+                    },
+                    error:function (a, b, c, d) {
+                        alert(b);
+                    }
+                });
             });
         }
         //获取全部模板
@@ -121,9 +196,11 @@
                 $(this).prevAll().add($(this).nextAll()).removeClass("active");
                 $(this).addClass("active");
             });
+            //模态框暗下去的时候
             $("#addModel").on("hidden.bs.modal",function () {
+                $("#gongxuContent").html("");
                 $("#modelForm").get(0).reset();
-                $("#modelForm").find("input[type=hidden]").val("0");
+                $("#modelForm").find("input[type=hidden]").val("");
             });
         }
         function addLog(message){
@@ -135,7 +212,7 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 
                 <div class="well">
                     <div class="btn-group" >
@@ -149,7 +226,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-10">
+            <div class="col-xs-9 col-sm-9 col-md-9  col-lg-8">
                 <div class="well">
                     <h3>工序特性指标</h3>
                     <div class="btn-group" >
@@ -197,28 +274,24 @@
                                 <label  class="col-md-3 control-label">模板名</label>
                                 <div class="col-md-7">
                                     <input class="form-control" type="text" placeholder="模板名" name="name" >
-                                    <input type="hidden" name="id" value="0">
+                                    <input type="hidden" name="id" >
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="gongxu" class="col-md-3 control-label">选择工序</label>
                                 <div class="col-md-7 form-inline">
                                     <select id="gongxu" class="form-control">
-                                        <option>请选择</option>
-                                        <option>工序1</option>
-                                        <option>工序2</option>
+                                        <option>数据获取中，请稍后……</option>
                                     </select>
-                                    <button type="button" class="btn btn-info">选择</button>
+                                    <button id="selectProcedureBtn" type="button" class="btn btn-info">选择</button>
                                     <span class="pull-right">
                                         <button type="button" id="addProcedureBtn" class=" btn btn-info">添加工序</button>
-                                        <input type="text" class="pull-right form-control" placeholder="请输入工序名称">
+                                        <input type="text" name="procedureName" class="pull-right form-control" placeholder="请输入工序名称">
                                     </span>
                                 </div>
                             </div>
                             <div class="form-group ">
-                                <div class="col-md-6 col-md-offset-3">
-                                    <input type="text" disabled="disabled" class="form-control " value="模板1">
-                                    <input type="text" disabled="disabled" class="form-control" value="模板2">
+                                <div id="gongxuContent" class="col-md-6 col-md-offset-3">
                                 </div>
                             </div>
                         </form>
@@ -235,6 +308,6 @@
         </div><!--.modal-->
 
     </div>
-    <div id="log"><ul></ul></div>
+    <div class="hide" id="log"><ul></ul></div>
 </body>
 </html>

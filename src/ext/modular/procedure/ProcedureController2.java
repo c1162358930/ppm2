@@ -1,16 +1,12 @@
 package ext.modular.procedure;
 
 import ext.modular.common.ResultUtils;
-import ext.modular.template.TemplateEntity;
-import ext.modular.template.TemplateSer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,16 +31,36 @@ public class ProcedureController2 {
         String jsonStr = "";
         String actionName = request.getParameter("actionName");
         log.info("actionName={}",actionName);
-        TemplateSer templateSer=new TemplateSer();
-        //获取模板列表
+        ProcedureSer procedureSer=new ProcedureSer();
+        //获取全部工序列表
         if("get".equals(actionName)) {
-            List templateList = templateSer.getModelList();
-
-            //存储或修改模板的方法
-        }else if("post".equals(actionName)){
-
+            List templateList = procedureSer.getProcedureList();
+            jsonStr=ResultUtils.succ(templateList);
+        //根据模板获得工序
+        }else if("getByTemplate".equals(actionName)){
+            String templateIdStr=request.getParameter("templateId");
+            log.info("获取的templateIdStr=",templateIdStr);
+            if(StringUtils.isEmpty(templateIdStr)){
+                jsonStr=ResultUtils.error("没有找到模板id");
+            }else{
+                int templateId=Integer.valueOf(templateIdStr);
+                List<ProcedureEntity> list=procedureSer.getByTemplate(templateId);
+                jsonStr=ResultUtils.succ(list);
+            }
+        }
+        //增加工序
+        else if("add".equals(actionName)){
+            String name=request.getParameter("procedureName");
+            String creatorName="无名";
+            ProcedureEntity entity=new ProcedureEntity();
+            entity.setName(name);
+            entity.setCreator(creatorName);
+            procedureSer.addProcedure(entity);
+            jsonStr=ResultUtils.succ(null,"工序保存成功");
         }else if("delete".equals(actionName)){
-
+            jsonStr=ResultUtils.error("功能暂未开发");
+        }else{
+            jsonStr=ResultUtils.error("actionName错误，actionName="+actionName);
         }
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=UTF-8");

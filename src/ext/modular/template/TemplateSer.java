@@ -31,7 +31,7 @@ public class TemplateSer {
      * @param templateEntity
      * @return void
      **/
-    public void add(TemplateEntity templateEntity)  {
+    public TemplateEntity add(TemplateEntity templateEntity)  {
         Connection connection= null;
         Statement statement=null;
         try {
@@ -40,6 +40,21 @@ public class TemplateSer {
             String sqlStr=String.format("insert into ppm_template(%s) values(ppm_seq.nextval,'%s','%s')"
                     ,insertField, templateEntity.getCreator(), templateEntity.getName());
             statement.execute(sqlStr);
+            sqlStr=String.format("SELECT %s FROM (SELECT %s FROM PPM_TEMPLATE ORDER BY createTime desc)WHERE rownum=1",
+                    selectField,selectField);
+            ResultSet resultSet=statement.executeQuery(sqlStr);
+            log.info("查询的sql为“{}”,查询到的结果resultSet为：“{}”",sqlStr,resultSet);
+            if(resultSet!=null){
+                while(resultSet.next()){
+                    TemplateEntity templateEntity2=new TemplateEntity();
+                    templateEntity2.setId(resultSet.getInt("id"));
+                    templateEntity2.setCreateTime(resultSet.getDate("createTime"));
+                    templateEntity2.setUpdateTime(resultSet.getDate("updateTime"));
+                    templateEntity2.setCreator(resultSet.getString("creator"));
+                    templateEntity2.setName(resultSet.getString("name"));
+                    return templateEntity2;
+                }
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -47,6 +62,7 @@ public class TemplateSer {
         }finally {
             ConnectionUtil.close(connection,statement);
         }
+        return null;
     }
     /**
      * 获取模板列表

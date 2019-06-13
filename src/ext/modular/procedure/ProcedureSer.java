@@ -1,26 +1,29 @@
 package ext.modular.procedure;
 
-import ext.modular.characteristic.CharacteristicEntity;
 import ext.modular.common.ConnectionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * des:
- *
+ *  工序service
  * @author fxiao
  * @date 2019/6/6 10:03
  */
 @Service
 public class ProcedureSer {
+    private final Logger log= LoggerFactory.getLogger(this.getClass());
     private String selectField="id,createTime,updateTime,creator,name";
-    private String insertField="id,createTime,updateTime,creator,name";
+    private String insertField="id,creator,name";
     /**
      * 获取工序列表
      * @Author Fxiao
@@ -77,10 +80,48 @@ public class ProcedureSer {
         try{
             connection=ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
-            String sqlStr=String.format("INSERT INTO ppm_working_procedure(%s) VALUES(ppm_seq.nextval,'%s','%s','%s','%s')",
-                    insertField,procedureEntity.getCreateTime(),procedureEntity.getUpdateTime(),
+            String sqlStr=String.format("INSERT INTO ppm_working_procedure(%s) VALUES(ppm_seq.nextval,'%s','%s')",
+                    insertField,
                     procedureEntity.getCreator(), procedureEntity.getName());
             statement.executeQuery(sqlStr);
+        }
+        catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addIntoTemplate(int templateId,String[]procedureIds,String currentUserId){
+        Connection connection=null;
+        Statement statement=null;
+        try{
+            connection=ConnectionUtil.getJdbcConnection();
+            statement=connection.createStatement();
+
+            String sqlStr="SELECT ppm_order FROM (SELECT ppm_order FROM PPM_TEMPLATE_WORK_LINK ORDER by  ppm_order desc)WHERE rownum=1";
+            ResultSet resultSet=statement.executeQuery(sqlStr);
+            //先查询到当前order 排序到多少了
+            int order=10;
+            if(resultSet!=null){
+                while(resultSet.next()){
+                    int ppm_order=resultSet.getInt("ppm_order");
+                    log.info("查询到的ppm_order={}",ppm_order);
+                    order+=ppm_order;
+                }
+            }
+            log.info("procedureIds={}", Arrays.toString(procedureIds));
+            //循环插入关系数据
+            for (String procedureId : procedureIds) {
+                sqlStr=String.format(
+                        "INSERT INTO PPM_TEMPLATE_WORK_LINK(id,creator,template_id,tw_id,ppm_order) " +
+                                "VALUES (ppm_seq.nextval,'%s',%s,%s,%s)",
+                        currentUserId,templateId,procedureId,order);
+                log.info("插入id为\"{}\"的工序时的sql为\"{}\"",procedureId,sqlStr);
+                statement.execute(sqlStr);
+                order+=10;
+            }
 
         }
         catch (ClassNotFoundException e){
@@ -90,6 +131,8 @@ public class ProcedureSer {
             e.printStackTrace();
         }
     }
+
+
     /**
      * 修改工序
      * @Author Fxiao
@@ -141,4 +184,45 @@ public class ProcedureSer {
             e.printStackTrace();
         }
     }
+    public List<ProcedureEntity> getByTemplate(int templateId){
+        Connection connection=null;
+        Statement statement=null;
+        List<ProcedureEntity> list=new LinkedList<>();
+        try{
+            connection= ConnectionUtil.getJdbcConnection();
+            statement=connection.createStatement();
+            //每个字段前面拼接一个“a.”
+            String[] arr=selectField.split(",");
+            StringBuilder sb=new StringBuilder();
+            for (int i = 0; i < arr.length - 1; i++) {
+                sb.append("a.").append(arr[i]).append(",");
+            }
+            sb.append("a.").append(arr[arr.length - 1]);
+            String sqlStr=String.format(
+                    "SELECT %s FROM PPM_WORKING_PROCEDURE a,PPM_TEMPLATE_WORK_LINK b WHERE a.ID=b.TW_ID AND b.TEMPLATE_ID=%s"
+                    ,sb.toString(),templateId);
+            log.info("合成后的sql={}",sqlStr);
+            ResultSet resultSet=statement.executeQuery(sqlStr);
+            if(resultSet!=null){
+                while(resultSet.next()){
+                    ProcedureEntity procedureEntity=new ProcedureEntity();
+                    procedureEntity.setId(resultSet.getInt("id"));
+                    procedureEntity.setCreateTime(resultSet.getDate("createTime"));
+                    procedureEntity.setUpdateTime(resultSet.getDate("updateTime"));
+                    procedureEntity.setCreator(resultSet.getString("creator"));
+                    procedureEntity.setName(resultSet.getString("name"));
+                    list.add(procedureEntity);
+                }
+            }
+
+        }
+        catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }
