@@ -102,25 +102,16 @@ public class ProcedureSer {
 
             String sqlStr="SELECT ppm_order FROM (SELECT ppm_order FROM PPM_TEMPLATE_WORK_LINK ORDER by  ppm_order desc)WHERE rownum=1";
             ResultSet resultSet=statement.executeQuery(sqlStr);
-            //先查询到当前order 排序到多少了
-            int order=10;
-            if(resultSet!=null){
-                while(resultSet.next()){
-                    int ppm_order=resultSet.getInt("ppm_order");
-                    log.info("查询到的ppm_order={}",ppm_order);
-                    order+=ppm_order;
-                }
-            }
+
             log.info("procedureIds={}", Arrays.toString(procedureIds));
             //循环插入关系数据
             for (String procedureId : procedureIds) {
                 sqlStr=String.format(
                         "INSERT INTO PPM_TEMPLATE_WORK_LINK(id,creator,template_id,tw_id,ppm_order) " +
-                                "VALUES (ppm_seq.nextval,'%s',%s,%s,%s)",
-                        currentUserId,templateId,procedureId,order);
+                                "VALUES (ppm_seq.nextval,'%s',%s,%s,ppm_order_num_seq.nextval)",
+                        currentUserId,templateId,procedureId);
                 log.info("插入id为\"{}\"的工序时的sql为\"{}\"",procedureId,sqlStr);
                 statement.execute(sqlStr);
-                order+=10;
             }
 
         }
