@@ -75,6 +75,7 @@ public class TemplateController2 {
                 newTemplateId=templateEntity.getId();
             }
             //添加工序到模板里去
+            log.info("newTemplateId={}",newTemplateId);
             if(newTemplateId!=0) procedureSer.addIntoTemplate(newTemplateId,procedureList,"无名");
         }else if("delete".equals(actionName)){
             String templateId=request.getParameter("id");

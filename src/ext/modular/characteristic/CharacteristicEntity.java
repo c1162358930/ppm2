@@ -1,28 +1,21 @@
 package ext.modular.characteristic;
 
 import ext.modular.common.BasicEntity;
-import ext.modular.procedure.ProcedureEntity;
 
 /**
  * des:
- *
+ *  工艺检验特性实体类
  * @author fxiao
  * @date 2019/6/4 14:22
  */
 public class CharacteristicEntity extends BasicEntity {
-    private ProcedureEntity procedureEntity;
+
     private String name;
+    //检验特性数量
     private int total;
+    //严酷度加权系数
     private int coefficient;
-    private int ppm_order;
-
-    public ProcedureEntity getProcedureEntity() {
-        return procedureEntity;
-    }
-
-    public void setProcedureEntity(ProcedureEntity procedureEntity) {
-        this.procedureEntity = procedureEntity;
-    }
+    private int ppmOrder;
 
     public String getName() {
         return name;
@@ -48,12 +41,12 @@ public class CharacteristicEntity extends BasicEntity {
         this.coefficient = coefficient;
     }
 
-    public int getPpm_order() {
-        return ppm_order;
+    public int getPpmOrder() {
+        return ppmOrder;
     }
 
-    public void setPpm_order(int ppm_order) {
-        this.ppm_order = ppm_order;
+    public void setPpmOrder(int ppmOrder) {
+        this.ppmOrder = ppmOrder;
     }
 }
 

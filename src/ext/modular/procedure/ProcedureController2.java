@@ -1,5 +1,6 @@
 package ext.modular.procedure;
 
+import ext.modular.common.AllProduct;
 import ext.modular.common.ResultUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import wt.pdmlink.PDMLinkProduct;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,14 +34,14 @@ public class ProcedureController2 {
         String actionName = request.getParameter("actionName");
         log.info("actionName={}",actionName);
         ProcedureSer procedureSer=new ProcedureSer();
-        //获取全部工序列表
         if("get".equals(actionName)) {
+            log.info("获取全部工序列表");
             List templateList = procedureSer.getProcedureList();
             jsonStr=ResultUtils.succ(templateList);
-        //根据模板获得工序
         }else if("getByTemplate".equals(actionName)){
+            log.info("根据模板获得工序");
             String templateIdStr=request.getParameter("templateId");
-            log.info("获取的templateIdStr=",templateIdStr);
+            log.info("获取的templateIdStr={}",templateIdStr);
             if(StringUtils.isEmpty(templateIdStr)){
                 jsonStr=ResultUtils.error("没有找到模板id");
             }else{
@@ -48,8 +50,8 @@ public class ProcedureController2 {
                 jsonStr=ResultUtils.succ(list);
             }
         }
-        //增加工序
         else if("add".equals(actionName)){
+            log.info("增加工序");
             String name=request.getParameter("procedureName");
             String creatorName="无名";
             ProcedureEntity entity=new ProcedureEntity();
@@ -58,8 +60,18 @@ public class ProcedureController2 {
             procedureSer.addProcedure(entity);
             jsonStr=ResultUtils.succ(null,"工序保存成功");
         }else if("delete".equals(actionName)){
-            jsonStr=ResultUtils.error("功能暂未开发");
+            log.info("删除工序分支");
+            List<PDMLinkProduct> list = AllProduct.getPDMLinkProductList("",false);
+            StringBuilder sb=new StringBuilder();
+
+            for (int i = 0; i < list.size(); i++) {
+                PDMLinkProduct pdmLinkProduct=list.get(i);
+                sb.append(pdmLinkProduct.getIdentity()).append(",");
+            }
+            log.info("内容是：{}",sb.toString());
+            jsonStr=ResultUtils.error("功能尚未开发");
         }else{
+            log.info("其他分支");
             jsonStr=ResultUtils.error("actionName错误，actionName="+actionName);
         }
         response.setCharacterEncoding("utf-8");
