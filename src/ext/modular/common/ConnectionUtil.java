@@ -3,10 +3,7 @@ package ext.modular.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * des:
@@ -51,6 +48,22 @@ public class ConnectionUtil {
         if(statement!=null){
             try {
                 statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void close(Connection connection, PreparedStatement ps){
+        if(connection!=null){
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if(ps!=null){
+            try {
+                ps.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
