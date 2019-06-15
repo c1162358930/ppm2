@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -27,7 +28,7 @@ public class ModelController {
         String actionName=request.getParameter("actionName");
         log.info("actionName={}",actionName);
         ModelSer ser=new ModelSer();
-        //获取型号列表
+        /*//获取型号列表
         if("get".equals(actionName)){
             List<ModelEntity> modelList =ser.getModelList();
             if(modelList!=null){
@@ -66,14 +67,19 @@ public class ModelController {
                 ser.deleteModel(Integer.parseInt(id));
                 jsonStr=ResultUtils.succ("删除型号信息成功");
             }
-        }else if("getListByWindch".equals(actionName)){
-            log.info("在windchill中获取所有的型号信息");
-            List list= ModelSer.getProduct();
-            if(list==null){
-                jsonStr=ResultUtils.error("查询到的list为null");
+        }else*/
+        if("get".equals(actionName)){
+            List<ModelEntity> modelList=ser.getProduct();
+            log.info("modelList的长度为{}",String.valueOf(modelList.size()));
+            modelList=ser.getModel(modelList);
+            if(modelList!=null){
+                log.info("获取型号列表成功");
+                jsonStr= ResultUtils.succ(modelList);
             }else{
-                jsonStr=ResultUtils.succ(list);
+                log.info("获取型号列表失败！");
+                jsonStr=ResultUtils.error("获取型号列表失败！");
             }
+
         }
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;Charset=UTF-8");

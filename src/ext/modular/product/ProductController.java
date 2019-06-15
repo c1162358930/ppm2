@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 import java.util.List;
 /**
  * des:
@@ -58,6 +59,17 @@ public class ProductController {
             }
 
         }
+        /*//根据型号id获取产品列表
+        else if ("getByModelId".equals(actionName)){
+            String modelId=request.getParameter("id");
+            List<ProductEntity> productList=new LinkedList<ProductEntity>();
+            if(modelId!=null){
+                log.info("获取型号id为“{}”成功",modelId);
+                productList=ser.getProductListByModelId(modelId);
+                log.info("productList为");
+            }
+
+        }*/
         //新增
         else if("post".equals(actionName)){
             ProductEntity entity=new ProductEntity();
@@ -65,9 +77,7 @@ public class ProductController {
             String productName=request.getParameter("name");
             entity.setName(request.getParameter("name"));
             entity.setCreator(request.getParameter("creator"));
-            ModelEntity modelEntity=new ModelEntity();
-            modelEntity.setId(Integer.parseInt(request.getParameter("model_id")));
-            entity.setModelEntity(modelEntity);
+            entity.setModel_id(request.getParameter("model_id"));
             entity.setProduct_code(request.getParameter("product_code"));
             entity.setModel_type(request.getParameter("model_type"));
             entity.setBatch(request.getParameter("batch"));

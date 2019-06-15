@@ -1,7 +1,6 @@
 package ext.modular.product;
 
 import ext.modular.common.ConnectionUtil;
-import ext.modular.model.ModelEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -52,9 +51,7 @@ public class ProductSer {
                     productEntity.setName(resultSet.getString("name"));
                     productEntity.setCreateTime(resultSet.getDate("createTime"));
                     productEntity.setUpdateTime(resultSet.getTime("updateTime"));
-                    ModelEntity modelEntity=new ModelEntity();
-                    modelEntity.setId(resultSet.getInt("model_id"));
-                    productEntity.setModelEntity(modelEntity);
+                    productEntity.setModel_id(resultSet.getString("model_id"));
                     productEntity.setProduct_code(resultSet.getString("product_code"));
                     productEntity.setModel_type(resultSet.getString("model_type"));
                     productEntity.setBatch(resultSet.getString("batch"));
@@ -79,10 +76,10 @@ public class ProductSer {
      * @Author renkai
      * @Description
      * @Date  2019/6/15
-     * @param
+     * @param id
      * @return java.util.List<ext.modular.product.ProductEntity>
      **/
-    public List<ProductEntity> getProductListByModelId(int id){
+    public List<ProductEntity> getProductListByModelId(String id){
         Connection connection=null;
         Statement statement=null;
         ResultSet resultSet=null;
@@ -101,6 +98,7 @@ public class ProductSer {
                     productEntity.setName(resultSet.getString("name"));
                     productEntity.setCreateTime(resultSet.getDate("createTime"));
                     productEntity.setUpdateTime(resultSet.getTime("updateTime"));
+                    productEntity.setModel_id(resultSet.getString("model_id"));
                     productEntity.setProduct_code(resultSet.getString("product_code"));
                     productEntity.setModel_type(resultSet.getString("model_type"));
                     productEntity.setBatch(resultSet.getString("batch"));
@@ -148,9 +146,7 @@ public class ProductSer {
                      productEntity.setName(resultSet.getString("name"));
                      productEntity.setCreateTime(resultSet.getDate("createTime"));
                      productEntity.setUpdateTime(resultSet.getDate("updateTime"));
-                     ModelEntity modelEntity = new ModelEntity();
-                     modelEntity.setId(resultSet.getInt("model_id"));
-                     productEntity.setModelEntity(modelEntity);
+                     productEntity.setModel_id(resultSet.getString("model_id"));
                      productEntity.setProduct_code(resultSet.getString("product_code"));
                      productEntity.setModel_type(resultSet.getString("model_type"));
                      productEntity.setBatch(resultSet.getString("batch"));
@@ -183,7 +179,7 @@ public class ProductSer {
             connection=ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
             String sqlStr=String.format("INSERT INTO ppm_product(%s) VALUES(ppm_seq.nextval,'%s','%s',%s,'%s','%s','%s',%s)",
-                    insertField, productEntity.getCreator(), productEntity.getName(),productEntity.getModelEntity().getId(),
+                    insertField, productEntity.getCreator(), productEntity.getName(),productEntity.getModel_id(),
                     productEntity.getProduct_code(),productEntity.getModel_type(),productEntity.getBatch(),productEntity.getQuantity());
             log.info("新增的sql为“{}”",sqlStr);
             statement.executeQuery(sqlStr);
@@ -212,7 +208,7 @@ public class ProductSer {
             statement=connection.createStatement();
             String sqlStr=String.format("UPDATE ppm_product SET name='%s', model_id=%s"+
                             ", product_code='%s' ,model_type='%s', batch='%s',quantity='%s' WHERE id =%s",
-                    productEntity.getName(),productEntity.getModelEntity().getId(),
+                    productEntity.getName(),productEntity.getModel_id(),
                     productEntity.getProduct_code(),productEntity.getModel_type(),productEntity.getBatch(),
                     productEntity.getQuantity(),productEntity.getId());
             log.info("修改的sql为“{}”",sqlStr);

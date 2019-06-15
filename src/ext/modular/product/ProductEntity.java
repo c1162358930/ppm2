@@ -1,11 +1,10 @@
 package ext.modular.product;
 
 import ext.modular.common.BasicEntity;
-import ext.modular.model.ModelEntity;
 
 public class ProductEntity extends BasicEntity {
     private String name;
-    private ModelEntity modelEntity;
+    private String model_id;
     private String product_code;
     private String model_type;
     private String batch;
@@ -19,12 +18,12 @@ public class ProductEntity extends BasicEntity {
         this.name = name;
     }
 
-    public ModelEntity getModelEntity() {
-        return modelEntity;
+    public String getModel_id() {
+        return model_id;
     }
 
-    public void setModelEntity(ModelEntity modelEntity) {
-        this.modelEntity = modelEntity;
+    public void setModel_id(String model_id) {
+        this.model_id = model_id;
     }
 
     public String getProduct_code() {
@@ -63,7 +62,7 @@ public class ProductEntity extends BasicEntity {
     public String toString() {
         return "ProductEntity{" +
                 "name='" + name + '\'' +
-                ", modelEntity=" + modelEntity +
+                ", model_id='" + model_id + '\'' +
                 ", product_code='" + product_code + '\'' +
                 ", model_type='" + model_type + '\'' +
                 ", batch='" + batch + '\'' +
