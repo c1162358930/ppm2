@@ -39,7 +39,8 @@ public class CharacteristicSer {
         try{
             connection=ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
-            String sqlStr=String.format("SELECT %s FROM ppm_characteristic WHERE tw_id=%s ORDER BY PPM_ORDER ",selectField,procedureId);
+            String sqlStr=String.format("SELECT %s FROM ppm_characteristic WHERE tw_id=%s and DEL_FLAG=0 ORDER BY PPM_ORDER "
+                    ,selectField,procedureId);
             resultSet=statement.executeQuery(sqlStr);
             if(resultSet!=null){
                 while (resultSet.next()){
@@ -151,7 +152,7 @@ public class CharacteristicSer {
         PreparedStatement ps=null;
         try{
             connection= ConnectionUtil.getJdbcConnection();
-            String sqlStr=String.format("SELECT * FROM ppm_characteristic WHERE id=? ");
+            String sqlStr=String.format("SELECT * FROM ppm_characteristic WHERE id=? and DEL_FLAG=0 ");
             ps=connection.prepareStatement(sqlStr);
             ps.setInt(1,id);
             ResultSet resultSet=ps.executeQuery();
@@ -193,7 +194,7 @@ public class CharacteristicSer {
         try{
             connection= ConnectionUtil.getJdbcConnection();
             statement=connection.createStatement();
-            String sqlStr=String.format("UPDATE ppm_characteristic SET DEL_FLAG=0 where ID ='%s'",id);
+            String sqlStr="UPDATE ppm_characteristic SET DEL_FLAG=1 where ID ="+id;
             statement.executeQuery(sqlStr);
 
         }

@@ -289,7 +289,7 @@ function getProcedureByTemplate(){
                     _tr.find("td:eq(4)").text("");
                     $("#procedureList").append(_tr);
                 });
-                addCharaByProceId();
+                addCharaByProceId(/*result.data*/);
             }else{
                 alert(result.message);
             }
@@ -353,11 +353,13 @@ function addLog(message){
     $("#log").children("ul").append(_li);
 }
 //得到工序后，为其添加工序特性
-function addCharaByProceId() {
+function addCharaByProceId(/*procedureList*/) {
     var procedureList=$("#procedureList").find("tr:not(:first)");
     $.each(procedureList,function (i,n) {
         var _proceId=$(n).prop("id");
         var proceName=$(n).find("td:eq(1)").text();
+        // var _proceId=n.id;
+        // var proceName=n.name;
 
         $.ajax({
             url:"/Windchill/servlet/Navigation/characteristic?actionName=getCharacList&procedureId="+_proceId,
@@ -374,6 +376,7 @@ function addCharaByProceId() {
                         _tr.find("td:eq(3)").text(m.total);
                         _tr.find("td:eq(4)").text(m.coefficient);
                         $(n).after(_tr);
+                        // $("#procedureList").find("tbody").append(_tr);
                     });
                 }else{
                     alert(result.message);
