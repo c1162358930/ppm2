@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import wt.util.WTException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,7 @@ public class ModelController {
     }
 
     @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST,RequestMethod.HEAD })
-    public void processRequest(HttpServletRequest request, HttpServletResponse response){
+    public void processRequest(HttpServletRequest request, HttpServletResponse response) throws WTException {
         String jsonStr="";
         String actionName=request.getParameter("actionName");
         log.info("actionName={}",actionName);
@@ -64,6 +65,14 @@ public class ModelController {
             }else{
                 ser.deleteModel(Integer.parseInt(id));
                 jsonStr=ResultUtils.succ("删除型号信息成功");
+            }
+        }else if("getListByWindch".equals(actionName)){
+            log.info("在windchill中获取所有的型号信息");
+            List list= ModelSer.getProduct();
+            if(list==null){
+                jsonStr=ResultUtils.error("查询到的list为null");
+            }else{
+                jsonStr=ResultUtils.succ(list);
             }
         }
         response.setCharacterEncoding("utf-8");

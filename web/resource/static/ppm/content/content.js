@@ -1,3 +1,58 @@
+
+//获取左侧树的数据
+function getData(){
+    var treeViewData=getModel();
+
+}
+//获取型号
+function getModel() {
+    $.ajax({
+        url:"/Windchill/servlet/Navigation/model",
+        data:{"actionName":"getListByWindch"},
+        type:'get',
+        dataType:"json",
+        success:function (result) {
+            if(result.success){
+                var modelList=result.data;
+                getProductByModel(modelList);
+
+            }else{
+                alert(result.message);
+            }
+
+        },
+        error:function (a,b,c,d) {
+            alert(b);
+        }
+    });
+}
+//根据模型获取产品
+function getProductByModel(modelList) {
+    $.each(modelList,function (i,n) {
+        $.ajax({
+            url:"",
+            type:"get",
+            dataType:"json",
+            data:{"actionName":--},
+            success:function(result){
+                if(result.success){
+                    $(n).productList=result.data;
+                }else{
+                    alert(result.message)
+                }
+            },
+            error:function (a, b, c, d) {
+                alert(b);
+            }
+        })
+    })
+}
+
+
+
+
+
+
 var defaultData = [
     {
         text:"型号",
@@ -52,6 +107,7 @@ $(function(){
     $('#tree').treeview('expandNode', [ 0, { levels: 2, silent: true } ]);//展开首节点
 
 })
+//dataTable
 $(function(){
     var option={
         data:[
@@ -81,3 +137,30 @@ $(function(){
     }
     var myformTable=$("#myform").DataTable(option);
 });
+
+//user
+$(function(){
+    //注册按钮
+    bindBtn();
+    bindEvent();
+
+
+})
+//绑定按钮
+function bindBtn() {
+    //新增产品按钮
+    $("#addModelBtn").click(function () {
+        var currentNode=$('#tree').treeview('getSelected');
+        if(currentNode.type!="product"){
+            alert("请选择型号");
+            return false;
+        }else{
+            currentNode.id;
+        }
+
+    });
+}
+//注册事件
+function bindEvent() {
+
+}

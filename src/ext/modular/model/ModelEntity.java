@@ -8,6 +8,16 @@ import java.util.List;
 public class ModelEntity extends BasicEntity {
     private String name;
     private String model_code;
+    private String numberCode;
+
+    public String getNumberCode() {
+        return numberCode;
+    }
+
+    public void setNumberCode(String numberCode) {
+        this.numberCode = numberCode;
+    }
+
     private List<ProductEntity> productEntityList;
 
     public String getName() {

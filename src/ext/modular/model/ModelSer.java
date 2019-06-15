@@ -6,10 +6,18 @@ import ext.modular.product.ProductSer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import wt.fc.PersistenceHelper;
+import wt.fc.QueryResult;
+import wt.pdmlink.PDMLinkProduct;
+import wt.query.ClassAttribute;
+import wt.query.QuerySpec;
+import wt.util.WTException;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -155,4 +163,40 @@ public class ModelSer {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 从windchill获取所有的型号信息
+     * @Author Fxiao
+     * @Description
+     * @Date 16:30 2019/6/15
+     * @param
+     * @return java.util.ArrayList
+     **/
+    public static List getProduct() throws WTException {
+        ArrayList list = new ArrayList();
+        QuerySpec qs = new QuerySpec(PDMLinkProduct.class);
+        qs.setAdvancedQueryEnabled(true);
+        ClassAttribute ca = new ClassAttribute(PDMLinkProduct.class, "thePersistInfo.theObjectIdentifier.id");
+        Logger log= LoggerFactory.getLogger(ModelSer.class);
+        log.debug("getProductListForSelect qs===" + qs);
+        QueryResult qr1 = PersistenceHelper.manager.find(qs);
+        while (qr1.hasMoreElements())
+        {
+            list.add(qr1.nextElement());
+        }
+        List modelList=new LinkedList();
+        for (int i = 0; i < list.size(); i++) {
+            PDMLinkProduct pdmLinkProduct= (PDMLinkProduct) list.get(i);
+            ModelEntity modelEntity=new ModelEntity();
+            modelEntity.setName(pdmLinkProduct.getName());
+            modelEntity.setNumberCode(pdmLinkProduct.getIdentificationObject().getIdentity());
+            modelList.add(modelEntity);
+        }
+        return modelList;
+    }
+
+
+
+
+
 }
