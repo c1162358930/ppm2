@@ -69,7 +69,8 @@ public class ModelSer {
             PDMLinkProduct pdmLinkProduct= (PDMLinkProduct) list.get(i);
             ModelEntity modelEntity=new ModelEntity();
             modelEntity.setName(pdmLinkProduct.getName());
-            modelEntity.setNumberCode(pdmLinkProduct.getIdentificationObject().getIdentity());
+            log.info("numberCode={}",pdmLinkProduct.getIdentificationObject().hashCode());
+            modelEntity.setNumberCode(String.valueOf(pdmLinkProduct.getIdentificationObject().hashCode()));
             modelList.add(modelEntity);
         }
         return modelList;
@@ -218,4 +219,5 @@ public class ModelSer {
         }
     }
 */
+
 }

@@ -7,7 +7,9 @@ public class ProductEntity extends BasicEntity {
     private String model_id;
     private String product_code;
     private String model_type;
+    //生产批次---该字段为无用字段，生产批次应该归属到表单上面去
     private String batch;
+    //生产数量--该字段为无用字段，生产数量应该归属到表单上面去
     private int quantity;
 
     public String getName() {

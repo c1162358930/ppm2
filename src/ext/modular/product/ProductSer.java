@@ -87,7 +87,7 @@ public class ProductSer {
         try{
             connection=ConnectionUtil.getJdbcConnection();
             statement= connection.createStatement();
-            String sqlStr=String.format("SELECT %s FROM ppm_product WHERE model_id=%s ORDER BY createTime",selectField,id);
+            String sqlStr=String.format("SELECT %s FROM ppm_product WHERE model_id='%s' ORDER BY createTime",selectField,id);
             resultSet=statement.executeQuery(sqlStr);
             log.info("查询的sql为“{}”,查询到的结果resultSet为：“{}”",sqlStr,resultSet);
             if(resultSet!=null){

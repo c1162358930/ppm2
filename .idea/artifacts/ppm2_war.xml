@@ -7,6 +7,7 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="lib">
           <element id="library" level="project" name="slf4j" />
+          <element id="library" level="project" name="Windchill10" />
         </element>
       </element>
     </root>
